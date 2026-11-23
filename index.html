@@ -219,12 +219,14 @@ function vDash(){
     <div class="card stat"><div class="n">${S.bills.length}</div><div class="l">Bills tracked</div><div class="s">${unsetBills?unsetBills+' need IACEA position confirmed':'All positions confirmed'}</div></div>
     <div class="card stat"><div class="n">${S.contacts.length}</div><div class="l">Contacts logged</div><div class="s">${S.contacts.filter(c=>c.followUp&&!c.done).length} open follow-ups</div></div>
   </div>`;
+  const GS=S.aeflaGrants.length?gSum(S.aeflaGrants):null, GSp=GS?GS.pt-GS.pf:0;
   if(st) h+=`<h2>Illinois adult education at a glance</h2><div class="grid k4">
     <div class="card stat"><div class="n">${fmt(st.enrollment)}</div><div class="l">Adult learners enrolled</div><div class="s">${esc(st.reportingPeriod)}</div></div>
-    <div class="card stat"><div class="n">${money(st.federalFunding)}</div><div class="l">Federal WIOA Title II funding</div><div class="s">$${st.perLearner} per learner</div></div>
+    <div class="card stat"><div class="n">${money(st.federalFunding)}</div><div class="l">Federal WIOA Title II funding</div><div class="s">$${st.perLearner} per learner · ${esc(st.reportingPeriod)}</div></div>
+    ${GS&&GS.s?`<div class="card stat"><div class="n">${usd(GS.s)}</div><div class="l">State adult ed grants (ICCB, FY27)</div><div class="s">${usd(GS.sb)} basic + ${usd(GS.sp)} performance · ${GSp?(Math.abs(GS.s-GSp)/GSp<0.0005?'flat vs FY26':chg(GS.s,GSp)+' vs FY26'):''}</div></div>`:''}
     <div class="card stat"><div class="n">${fmt(st.adultsNoHS)}</div><div class="l">Working-age adults without a HS credential</div></div>
     <div class="card stat"><div class="n">${fmt(st.adultsLimitedEnglish)}</div><div class="l">Adults who speak little or no English</div></div>
-  </div><div class="small muted" style="margin-top:6px">Source: ${esc(st.source)}</div>`;
+  </div><div class="small muted" style="margin-top:6px">Source: ${esc(st.source)}${GS&&GS.s?' State grants: ICCB FY2027 Adult Education and Literacy Grant Allocations (rev. 7/30/26), compared with the FY2026 Grant Award Determination Form.':''}</div>`;
   if(st&&st.blsUnemploymentIL){const bi=st.blsUnemploymentIL,bn=st.blsUnemploymentNoHSUS||{};h+=`<h2>Labor market (BLS)</h2><div class="grid k4">
     <div class="card stat"><div class="n">${esc(String(bi.rate))}%</div><div class="l">Illinois unemployment rate</div><div class="s">${esc(bi.period||'')}${bi.preliminary?' (preliminary)':''}, seasonally adjusted</div></div>
     ${bn.rate!=null?`<div class="card stat"><div class="n">${esc(String(bn.rate))}%</div><div class="l">U.S. unemployment, adults 25+ without a HS diploma</div><div class="s">${esc(bn.period||'')}, not seasonally adjusted</div></div>`:''}
